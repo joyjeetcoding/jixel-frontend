@@ -28,6 +28,7 @@ type UserFormData = z.infer<typeof userSchema>;
 const Login: React.FC = () => {
   const [showRegister, setShowRegister] = useState(false);
   const { login, loading } = useLogin();
+  const [open, setOpen] = useState(false);
 
   const handleRegister = () => {
     setShowRegister(!showRegister);
@@ -43,11 +44,12 @@ const Login: React.FC = () => {
 
   const onSubmit = async (data: UserFormData) => {
     await login(data);
+    setOpen(false);
   };
 
   return (
     <>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant="outline">Login</Button>
         </DialogTrigger>

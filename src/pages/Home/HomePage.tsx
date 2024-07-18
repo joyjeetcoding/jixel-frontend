@@ -1,15 +1,23 @@
 "use client";
 import Hero from "./Hero";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Login from "../LoginRegsiter/Login";
 import Register from "../LoginRegsiter/Register";
+import { useAuthContext } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 const HomePage = () => {
   const [showLogin, setShowLogin] = useState(false);
-
+  const router = useRouter();
   const handleShowLogin = () => {
     setShowLogin(!showLogin);
   };
+
+  const {authUser} = useAuthContext();
+
+  useEffect(() => {
+    router.push("/")
+  }, [authUser])
 
   return (
     <div className="md:max-w-3xl lg:max-w-6xl md:mx-auto ">
