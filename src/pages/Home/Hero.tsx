@@ -23,12 +23,14 @@ const Hero = () => {
             alt="idea-png"
           />
         </div>
-        <p className="absolute top-[30%] left-4 text-5xl font-btnfont font-semibold w-[40%] md:hidden">
-          Unleashing Brilliant Ideas for a Better Tomorrow
-        </p>
-        <p className="absolute top-[30%] left-4 text-5xl font-btnfont font-semibold w-[60%] hidden md:block">
-          Empowering Your Journey with Innovative Ideas
-        </p>
+        <div className="absolute top-[30%] left-4 text-5xl font-btnfont font-semibold">
+          <p className="w-[40%] md:hidden">
+            Unleashing Brilliant Ideas for a Better Tomorrow
+          </p>
+          <p className="hidden w-[60%] md:block">
+            Empowering Your Journey with Innovative Ideas
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,23 +1,21 @@
 "use client";
 import Hero from "./Hero";
-import { useEffect, useState } from "react";
 import Login from "../LoginRegsiter/Login";
-import Register from "../LoginRegsiter/Register";
 import { useAuthContext } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import DropDownMenu from "@/components/DropDownMenu";
+import { useEffect } from "react";
 
 const HomePage = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  const router = useRouter();
-  const handleShowLogin = () => {
-    setShowLogin(!showLogin);
-  };
-
-  const {authUser} = useAuthContext();
-
+  const { authUser, setAuthUser } = useAuthContext();
   useEffect(() => {
-    router.push("/")
-  }, [authUser])
+    const storedUser = localStorage.getItem("registered-user");
+    console.log("Stored User:", storedUser);
+    if (storedUser) {
+      setAuthUser(JSON.parse(storedUser));
+    }
+  }, [setAuthUser]);
+
+  console.log("AuthUser", authUser);
 
   return (
     <div className="md:max-w-3xl lg:max-w-6xl md:mx-auto ">
@@ -28,7 +26,7 @@ const HomePage = () => {
         </div>
         {/* Login/logout button */}
         <div className={`absolute right-4 top-4 md:flex font-btnfont z-[9]`}>
-          <Login />
+          {authUser ? <DropDownMenu /> : <Login />}
         </div>
       </div>
 

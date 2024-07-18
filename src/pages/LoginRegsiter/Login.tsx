@@ -20,15 +20,14 @@ import { ButtonLoading } from "@/components/LoadingButton";
 
 const userSchema = z.object({
   email: z.string().email("Invalid Email format"),
-  password: z.string().min(8, "Password is required"),
+  password: z.string().min(1, "Password is required"),
 });
 
 type UserFormData = z.infer<typeof userSchema>;
 
 const Login: React.FC = () => {
   const [showRegister, setShowRegister] = useState(false);
-  const { login, loading } = useLogin();
-  const [open, setOpen] = useState(false);
+  const { login, loading, open, setOpen } = useLogin();
 
   const handleRegister = () => {
     setShowRegister(!showRegister);
@@ -44,7 +43,6 @@ const Login: React.FC = () => {
 
   const onSubmit = async (data: UserFormData) => {
     await login(data);
-    setOpen(false);
   };
 
   return (
@@ -66,7 +64,7 @@ const Login: React.FC = () => {
                 </Label>
                 <Input
                   id="email"
-                  defaultValue="abc@youremail.com"
+                  placeholder="abc@youremail.com"
                   className="col-span-3"
                   type="email"
                   {...register("email")}
@@ -83,7 +81,7 @@ const Login: React.FC = () => {
                 </Label>
                 <Input
                   id="password"
-                  defaultValue="123456"
+                  placeholder="password"
                   className="col-span-3"
                   type="password"
                   {...register("password")}

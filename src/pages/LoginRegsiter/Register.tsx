@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -50,7 +50,8 @@ const Register = () => {
   const password = watch("password", "");
   const confirmPassword = watch("confirmPassword", "");
 
-  const { loading, signUp } = useSignUp();
+  const { loading, signUp, open, setOpen } = useSignUp();
+
 
   useEffect(() => {
     setValue("confirmPassword", confirmPassword);
@@ -61,7 +62,7 @@ const Register = () => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <span> Sign Up Here</span>
       </DialogTrigger>
@@ -78,7 +79,7 @@ const Register = () => {
               </Label>
               <Input
                 id="email"
-                defaultValue="abc@youremail.com"
+                placeholder="abc@youremail.com"
                 className="col-span-3"
                 type="email"
                 {...register("email")}
@@ -95,7 +96,7 @@ const Register = () => {
               </Label>
               <Input
                 id="fullName"
-                defaultValue="Ramesh Raghavan"
+                placeholder="Ramesh Raghavan"
                 className="col-span-3"
                 type="text"
                 {...register("fullName")}
@@ -112,7 +113,7 @@ const Register = () => {
               </Label>
               <Input
                 id="password"
-                defaultValue="abc@youremail.com"
+                placeholder="password"
                 className="col-span-3"
                 type="password"
                 {...register("password")}
@@ -129,7 +130,7 @@ const Register = () => {
               </Label>
               <Input
                 id="confirmPassword"
-                defaultValue="abc@youremail.com"
+                placeholder="Re-Type the password"
                 className="col-span-3"
                 type="password"
                 {...register("confirmPassword")}

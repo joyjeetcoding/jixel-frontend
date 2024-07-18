@@ -11,6 +11,7 @@ type Props = {
 
 const useSignUp = () => {
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const {setAuthUser} = useAuthContext();
 
@@ -46,7 +47,8 @@ const useSignUp = () => {
 
       setAuthUser(data);
 
-      toast.success("Registration Successful...Please Login");
+      toast.success("Registration Successful");
+      setOpen(false);
     } catch (error: any) {
       console.log(error);
       toast.error(error.message);
@@ -55,7 +57,7 @@ const useSignUp = () => {
     }
   };
 
-  return { loading, signUp };
+  return { loading, signUp, open, setOpen };
 };
 
 export default useSignUp;

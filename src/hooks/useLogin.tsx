@@ -18,6 +18,7 @@ function handleInputErrors({ email, password }: Props) {
 
 const useLogin = () => {
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const { setAuthUser } = useAuthContext();
 
@@ -48,6 +49,7 @@ const useLogin = () => {
       localStorage.setItem("registered-user", JSON.stringify(data));
 
       setAuthUser(data);
+      setOpen(false);
 
     } catch (error: any) {
       toast.error(error.message);
@@ -56,7 +58,7 @@ const useLogin = () => {
     }
   };
 
-  return {loading, login}
+  return {loading, login, open, setOpen}
 };
 
 export default useLogin;

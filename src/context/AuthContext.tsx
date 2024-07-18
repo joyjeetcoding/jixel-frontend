@@ -1,4 +1,5 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+"use client"
+import React, { createContext, ReactNode, useContext, useState, useEffect } from "react";
 
 interface User {
   fullName: string;
@@ -11,13 +12,9 @@ interface AuthContextType {
   authUser: User | null;
   setAuthUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
+
 export const AuthContext = createContext<AuthContextType>({
-  authUser: {
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
-  },
+  authUser: null,
   setAuthUser: () => {},
 });
 
@@ -30,9 +27,14 @@ interface AuthContextProviderProps {
 }
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [authUser, setAuthUser] = useState(
-    JSON.parse(localStorage.getItem("registered-user") as string) || null
-  );
+  const [authUser, setAuthUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("registered-user");
+    if (storedUser) {
+      setAuthUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ authUser, setAuthUser }}>
