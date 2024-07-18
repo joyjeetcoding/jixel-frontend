@@ -19,9 +19,8 @@ const HomePage = () => {
           <h1 className="font-logo font-extrabold text-2xl">Jixel</h1>
         </div>
         {/* Login/logout button */}
-        <div onClick={handleShowLogin} className={`${!showLogin ? `absolute right-4 top-4 md:flex font-btnfont z-[9999]` : `absolute right-4 top-4 md:flex font-btnfont z-[0] `}`}>
+        <div className={`absolute right-4 top-4 md:flex font-btnfont z-[9]`}>
           <Login />
-          <Register />
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,51 +8,111 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Register from "./Register";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useLogin from "@/hooks/useLogin";
+import { ButtonLoading } from "@/components/LoadingButton";
 
+const userSchema = z.object({
+  email: z.string().email("Invalid Email format"),
+  password: z.string().min(8, "Password is required"),
+});
 
-const Login = () => {
+type UserFormData = z.infer<typeof userSchema>;
+
+const Login: React.FC = () => {
+  const [showRegister, setShowRegister] = useState(false);
+  const { login, loading } = useLogin();
+
+  const handleRegister = () => {
+    setShowRegister(!showRegister);
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserFormData>({
+    resolver: zodResolver(userSchema),
+  });
+
+  const onSubmit = async (data: UserFormData) => {
+    await login(data);
+  };
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Login</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline">Login</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Login</DialogTitle>
+            <DialogDescription>Login to continue</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  defaultValue="abc@youremail.com"
+                  className="col-span-3"
+                  type="email"
+                  {...register("email")}
+                />
+              </div>
+              {errors.email?.message && (
+                <p className="w-full text-red-500 font-extrabold text-center text-xs">
+                  {errors.email?.message}
+                </p>
+              )}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="password" className="text-right">
+                  Password
+                </Label>
+                <Input
+                  id="password"
+                  defaultValue="123456"
+                  className="col-span-3"
+                  type="password"
+                  {...register("password")}
+                />
+              </div>
+              {errors.password?.message && (
+                <p className="w-full text-red-500 font-extrabold text-center text-xs">
+                  {errors.password?.message}
+                </p>
+              )}
+            </div>
+            <DialogDescription>
+              Don't have an account?{" "}
+              <span
+                onClick={handleRegister}
+                className="hover:underline cursor-pointer"
+              >
+                <Register />
+              </span>
+            </DialogDescription>
+            <DialogFooter>
+              {loading ? (
+                <ButtonLoading />
+              ) : (
+                <Button type="submit">Login</Button>
+              )}
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
