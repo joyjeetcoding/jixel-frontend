@@ -13,6 +13,7 @@ import useLogOut from "@/hooks/useLogOut";
 import { ButtonLoading } from "./LoadingButton";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { FaUserCircle } from "react-icons/fa";
 
 const DropDownMenu = () => {
   const { authUser } = useAuthContext();
@@ -29,8 +30,9 @@ const DropDownMenu = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="font-extrabold font-btnfont">
-        {authUser?.email}
+      <DropdownMenuTrigger className="font-extrabold font-btnfont flex">
+        Hii {authUser?.fullName.split(" ")[0]}!&nbsp;
+        <FaUserCircle className="absolute -right-3 lg:-right-5 translate-y-1" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
