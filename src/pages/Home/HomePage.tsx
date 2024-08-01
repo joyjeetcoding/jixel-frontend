@@ -15,7 +15,7 @@ const HomePage = () => {
     }
   }, [setAuthUser]);
 
-  console.log("AuthUser", authUser);
+  console.log("AuthUser at Home Page", authUser);
 
   return (
     <div className="md:max-w-3xl lg:max-w-6xl md:mx-auto ">

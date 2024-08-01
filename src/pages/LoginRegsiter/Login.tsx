@@ -93,7 +93,7 @@ const Login: React.FC = () => {
                 </p>
               )}
             </div>
-            <DialogDescription>
+            <DialogDescription className="my-4">
               Don't have an account?{" "}
               <span
                 onClick={handleRegister}

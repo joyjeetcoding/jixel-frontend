@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Idea from "../../assets/Idea.png";
 import Idea2 from "../../assets/Idea2.png";
+import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   return (
@@ -30,6 +31,7 @@ const Hero = () => {
           <p className="hidden w-[60%] md:block">
             Empowering Your Journey with Innovative Ideas
           </p>
+          <Button className=" font-extrabold hover:bg-yellow-400 hover:text-black">Click Here to Explore</Button>
         </div>
       </div>
     </div>
