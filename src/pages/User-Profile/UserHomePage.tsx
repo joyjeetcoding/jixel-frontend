@@ -27,6 +27,7 @@ const formSchema = z.object({
     message: "Please provide your Full Name",
   }),
   email: z.string().optional(),
+  imageFile: z.instanceof(File)
 });
 
 interface UserHomePageProps {
