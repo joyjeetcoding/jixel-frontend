@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
 import useUpdateAuthor from "@/hooks/useUpdateAuthor";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { ButtonLoading } from "@/components/LoadingButton";
 import LoadingScreen from "@/components/LoadingScreen";
 
@@ -27,7 +27,7 @@ const formSchema = z.object({
     message: "Please provide your Full Name",
   }),
   email: z.string().optional(),
-  imageFile: z.instanceof(File)
+  imageFile: z.any().optional(), // Handle file uploads
 });
 
 interface UserHomePageProps {
@@ -48,21 +48,20 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
   });
 
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-
   const { updateAuthor, loading } = useUpdateAuthor();
   const [loadinggetuser, setLoadinggetuser] = useState(false);
   const getUserInfo = () => {
     setLoadinggetuser(true);
-    const url =
-      `${process.env.NEXT_PUBLIC_USERPROFILE}`.concat("/") + `${userId}`;
+    const url = `${process.env.NEXT_PUBLIC_USERPROFILE}/${userId}`;
     axios
-      .get(url)
-      .then((item) => {
-        setUserInfo(item.data);
-        form.reset(item.data);
+      .get(url,{ withCredentials: true })
+      .then((response) => {
+        setUserInfo(response.data);
+        form.reset(response.data);
       })
       .catch((err) => {
         console.log(err);
+        toast.error("Unauthorized Access - Login First")
       })
       .finally(() => {
         setLoadinggetuser(false);
@@ -73,12 +72,10 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
     getUserInfo();
   }, [userId]);
 
-  const { register } = useForm({
-    resolver: zodResolver(formSchema),
-  });
-
   const onSubmit = async (data: UserFormData) => {
-    await updateAuthor({ ...data, id: userId });
+    // Handle file separately
+    const { imageFile, ...restData } = data;
+    await updateAuthor({ ...restData, id: userId, imageFile });
   };
 
   return (
@@ -100,17 +97,35 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
                 >
                   <FormField
                     control={form.control}
+                    name="imageFile"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Profile Photo</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            accept=".jpg, .jpeg, .png"
+                            onChange={(e) => {
+                              if (e.target.files?.[0]) {
+                                field.onChange(e); // Update react-hook-form state
+                              }
+                            }}
+                            // You might want to use `defaultValue` here if you want to display the current image
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
                     name="email"
                     disabled
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input
-                            {...register("email")}
-                            defaultValue={userInfo?.email}
-                            {...field}
-                          />
+                          <Input {...field} defaultValue={userInfo?.email} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -123,11 +138,7 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
                       <FormItem>
                         <FormLabel>Username</FormLabel>
                         <FormControl>
-                          <Input
-                            {...register("userName")}
-                            defaultValue={userInfo?.userName}
-                            {...field}
-                          />
+                          <Input {...field} defaultValue={userInfo?.userName} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -140,11 +151,7 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input
-                            {...register("fullName")}
-                            defaultValue={userInfo?.fullName}
-                            {...field}
-                          />
+                          <Input {...field} defaultValue={userInfo?.fullName} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
