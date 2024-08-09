@@ -1,54 +1,73 @@
-import { useState } from "react";
+import { User } from "@/pages/types/types";
+import { useMutation } from "react-query";
 import toast from "react-hot-toast";
 
-type Props = {
-  fullName: string;
-  userName: string;
-  email?: string;
-  imageFile?: File;
-  id: string;
-};
-
-const useUpdateAuthor = () => {
-  const [loading, setLoading] = useState(false);
-
-  const updateAuthor = async ({ id, fullName, userName, email, imageFile }: Props) => {
-    setLoading(true);
-    const formData = new FormData();
-
-    // Append text fields
-    formData.append("fullName", fullName);
-    formData.append("userName", userName);
-    if (email) formData.append("email", email);
-
-    // Append file if exists
-    if (imageFile) formData.append("imageFile", imageFile);
-
+export const useUpdateAuthor = () => {
+  const useUpdateAuthorRequest = async (
+    userFormData: FormData,
+    userId: string
+  ): Promise<User | undefined> => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_USERPROFILE}/${id}`, {
-        method: "PUT",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/author/${userId}`,
+        {
+          method: "PUT",
+          body: userFormData,
+        }
+      );
 
-      const data = await res.json();
-      console.log(data);
+      if (!response.ok) {
+        let errorMessage = "Failed to update author";
 
-      if (data.error) {
-        throw new Error(data.error);
+        try {
+          const errorResponse = await response.json();
+          errorMessage =
+            typeof errorResponse.error === "string"
+              ? errorResponse.error
+              : errorMessage;
+        } catch (e) {
+          console.error("Error parsing response as JSON:", e);
+        }
+
+        return Promise.reject(errorMessage);
+
       }
 
-      toast.success("Updated Successfully");
-
-      return true;
+      const data: User = await response.json();
+      return data;
     } catch (error: any) {
-      console.log(error);
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
+      let errorMessage = "Failed to update author";
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else {
+        console.error("Unexpected error type:", error);
+      }
+
+      toast.error(errorMessage)
     }
   };
 
-  return { updateAuthor, loading };
-};
+  const mutationFunction = async (data: {
+    userFormData: FormData;
+    userId: string;
+  }) => {
+    return useUpdateAuthorRequest(data.userFormData, data.userId);
+  };
 
-export default useUpdateAuthor;
+  const {
+    mutateAsync: updateUserStatus,
+    isLoading
+  } = useMutation(mutationFunction, {
+    onSuccess: () => {
+      toast.success("Author Updated");
+    },
+    onError:(err:any) => {
+      toast.error(err)
+    }
+  });
+
+  return { updateUserStatus, isLoading };
+};

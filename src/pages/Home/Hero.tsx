@@ -3,8 +3,16 @@ import Idea from "../../assets/Idea.png";
 import Idea2 from "../../assets/Idea2.png";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const Hero = () => {
+  const router = useRouter();
+  const handleExplore = () => {
+    router.push("/dashboard");
+  }
+
+
+
   const text1 =
     "Innovation is born from the willingness to take risks and the courage to dream big. Let your passion guide you to create something extraordinary.".split(
       " "
@@ -110,7 +118,7 @@ const Hero = () => {
         animate={{ opacity: 1, scale: 1 }}
         className="absolute left-[10%] md:bottom-[10%] bottom-[2%]"
       >
-        <Button className=" font-extrabold px-9 py-6 hover:bg-yellow-400 hover:text-black">
+        <Button onClick={handleExplore} className=" font-extrabold px-9 py-6 hover:bg-yellow-400 hover:text-black">
           Click Here to Explore
         </Button>
       </motion.div>

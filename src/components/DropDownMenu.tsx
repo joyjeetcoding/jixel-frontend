@@ -20,8 +20,6 @@ const DropDownMenu = () => {
   const router = useRouter();
   const { loading, logout } = useLogOut();
 
-
-
   const handleLogout = async (e: any) => {
     e.preventDefault();
 
@@ -31,14 +29,16 @@ const DropDownMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="font-extrabold font-btnfont flex">
-        Hii {authUser?.fullName.split(" ")[0]}!&nbsp;
-        <FaUserCircle className="absolute -right-3 lg:-right-5 translate-y-1" />
+        <span className="hidden md:flex">Hii {authUser?.fullName.split(" ")[0]}!&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <FaUserCircle size={25} className="absolute -right-3 lg:-right-5 translate-y-0" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <Link href={`/user-profile/${authUser?._id}`}>
-        <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
+            Profile
+          </DropdownMenuItem>
         </Link>
         {loading ? (
           <ButtonLoading />

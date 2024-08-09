@@ -14,10 +14,10 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
-import useUpdateAuthor from "@/hooks/useUpdateAuthor";
 import toast, { Toaster } from "react-hot-toast";
 import { ButtonLoading } from "@/components/LoadingButton";
 import LoadingScreen from "@/components/LoadingScreen";
+import { useUpdateAuthor } from "@/hooks/useUpdateAuthor";
 
 const formSchema = z.object({
   userName: z.string().min(1, {
@@ -27,7 +27,7 @@ const formSchema = z.object({
     message: "Please provide your Full Name",
   }),
   email: z.string().optional(),
-  imageFile: z.any().optional(),
+  imageFile: z.instanceof(File).optional(),
 });
 
 interface UserHomePageProps {
@@ -39,17 +39,34 @@ interface UserInfo {
   email: string;
   userName: string;
 }
-
 type UserFormData = z.infer<typeof formSchema>;
 
-const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
+
+const UserHomePage: React.FC<UserHomePageProps> = ({ userId}) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
   });
 
+  const {updateUserStatus, isLoading} = useUpdateAuthor();
+
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const { updateAuthor, loading } = useUpdateAuthor();
   const [loadinggetuser, setLoadinggetuser] = useState(false);
+  
+  const onSubmit = async (formDataJson: UserFormData) => {
+    // Handle file separately
+    const formData = new FormData();
+    formData.append("userName", formDataJson.userName);
+    formData.append("fullName", formDataJson.fullName);
+    if(formDataJson.email)
+      formData.append("email", formDataJson.email);
+    if(formDataJson.imageFile)
+      formData.append("imageFile", formDataJson.imageFile)
+    
+    
+      await updateUserStatus({userFormData:formData, userId});
+    
+  };
+
   const getUserInfo = () => {
     setLoadinggetuser(true);
     const url = `${process.env.NEXT_PUBLIC_USERPROFILE}/${userId}`;
@@ -71,12 +88,6 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
   useEffect(() => {
     getUserInfo();
   }, [userId]);
-
-  const onSubmit = async (data: UserFormData) => {
-    // Handle file separately
-    const { imageFile, ...restData } = data;
-    await updateAuthor({ ...restData, id: userId, imageFile });
-  };
 
   return (
     <>
@@ -106,9 +117,9 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
                             type="file"
                             accept=".jpg, .jpeg, .png"
                             onChange={(e) => {
-                              if (e.target.files?.[0]) {
-                                field.onChange(e); // Update react-hook-form state
-                              }
+                              field.onChange(
+                                e.target.files ? e.target.files[0] : null
+                              )
                             }}
                             // You might want to use `defaultValue` here if you want to display the current image
                           />
@@ -157,7 +168,7 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
                       </FormItem>
                     )}
                   />
-                  {loading ? (
+                  {isLoading ? (
                     <ButtonLoading />
                   ) : (
                     <Button
