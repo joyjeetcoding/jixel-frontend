@@ -21,9 +21,9 @@ const Navbar = () => {
     router.push("/");
   };
   return (
-    <div className="relative ">
+    <div className="relative">
       {/* logo */}
-      <div className="absolute  z-[999] top-4 left-4 translate-y-2">
+      <div className="absolute z-[999] top-4 left-4 translate-y-2">
         <h1
           onClick={redirectToHome}
           className="cursor-pointer font-logo font-extrabold text-2xl"

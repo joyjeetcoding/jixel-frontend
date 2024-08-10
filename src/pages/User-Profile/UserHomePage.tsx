@@ -121,7 +121,6 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId}) => {
                                 e.target.files ? e.target.files[0] : null
                               )
                             }}
-                            // You might want to use `defaultValue` here if you want to display the current image
                           />
                         </FormControl>
                         <FormMessage />
