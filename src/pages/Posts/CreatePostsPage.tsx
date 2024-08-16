@@ -153,7 +153,7 @@ const CreatePostsPage = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-full my-5">Submit</Button>
+            <Button className="w-full my-5">Create Jixel</Button>
           </form>
         </Form>
       </div>
