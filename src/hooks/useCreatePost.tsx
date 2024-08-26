@@ -7,9 +7,6 @@ export const useCreatePost = () => {
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/createPost`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: formData,
         credentials: "include"
       }

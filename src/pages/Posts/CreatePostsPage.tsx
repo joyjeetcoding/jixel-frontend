@@ -17,6 +17,9 @@ import { z } from "zod";
 import JoditEditor from "jodit-react";
 import "../../components/stylesforEditor/styles.scss";
 import { useCreatePost } from "@/hooks/useCreatePost";
+import toast, { Toaster } from "react-hot-toast";
+import { ButtonLoading } from "@/components/LoadingButton";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -41,9 +44,15 @@ type PostsFormData = z.infer<typeof formSchema>;
 const CreatePostsPage = () => {
   const form = useForm<PostsFormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: '',
+      summary: '',
+      imgUrl: undefined,
+      description: ''
+    }
   });
 
-  const { createPost } = useCreatePost();
+  const { createPost, isLoading } = useCreatePost();
 
   const editor = useRef(null);
   const [content, setContent] = useState("");
@@ -79,11 +88,10 @@ const CreatePostsPage = () => {
     formData.append("title", data.title);
     formData.append("summary", data.summary);
     formData.append("description", content);
-    // Append file input if it exists
+   
     if(data.imgUrl)
       formData.append("imgUrl", data.imgUrl)
 
-    // Log FormData to debug
     
 
     console.log(formData);
@@ -91,13 +99,17 @@ const CreatePostsPage = () => {
     try {
       await createPost(formData);
       console.log("Posted Successfully");
+      toast.success("Posted Successfully");
+
     } catch (error) {
       console.log("Error Creating Post", error);
+      toast.error("Error in Creating Post.. Try signing in again")
     }
   };
 
   return (
     <div className="md:max-w-3xl lg:max-w-6xl md:mx-auto ">
+      <Toaster />
       <h1 className="text-3xl font-extrabold text-center font-btnfont my-4">
         Create Your Posts Here
       </h1>
@@ -143,7 +155,7 @@ const CreatePostsPage = () => {
               name="imgUrl"
               render={({ field }) => (
                 <FormItem className="my-4">
-                  <FormLabel>Image</FormLabel>
+                  <FormLabel>Image (for Thumbnail)</FormLabel>
                   <FormControl>
                     <Input
                       type="file"
@@ -178,7 +190,13 @@ const CreatePostsPage = () => {
                 </FormItem>
               )}
             />
+            {
+              isLoading ? <Button className="w-full" disabled>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </Button>  : 
             <Button className="w-full my-5">Create Jixel</Button>
+            }
           </form>
         </Form>
       </div>
