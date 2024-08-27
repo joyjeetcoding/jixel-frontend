@@ -23,6 +23,8 @@ const useGetAllPosts = () => {
         setPosts(data);
       } catch (error: any) {
         toast.error(error.message);
+        console.log(error.message);
+        
       } finally {
         setLoading(false);
       }

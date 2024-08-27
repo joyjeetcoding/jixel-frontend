@@ -125,7 +125,7 @@ const CreatePostsPage = () => {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Student raised security concerns in Mobile Guardian MDM weeks before cyberattack"
+                      placeholder="Visionary Horizons: Unlocking Tomorrow's Possibilities"
                     />
                   </FormControl>
                   <FormMessage />
@@ -143,7 +143,7 @@ const CreatePostsPage = () => {
                       rows={5}
                       cols={10}
                       {...field}
-                      placeholder="A person claiming to be a student in Singapore publicly posted documentation showing lax security in a widely popular school mobile device management service called Mobile Guardian, weeks before a cyberattack on the company."
+                      placeholder="A platform that empowers individuals and organizations to envision and create a sustainable and tech-driven future, blending innovation, collaboration, and foresight."
                     />
                   </FormControl>
                   <FormMessage />

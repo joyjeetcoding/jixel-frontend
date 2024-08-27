@@ -1,55 +1,102 @@
 "use client"
-import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegComment } from "react-icons/fa";
-import Island from "../../assets/Island.jpg";
+import axios from "axios";
+import toast from "react-hot-toast";
+import parse from "html-react-parser";
 
-const PostsPage = () => {
+interface PostPageProps {
+  postId: string;
+}
+
+interface PostInfo {
+  title: string;
+  summary: string;
+  imgUrl: string;
+  description: string;
+  author: {
+    fullName: string;
+    userName: string;
+  };
+  userName: string;
+  createdAt: string;
+}
+
+const PostsPage: React.FC<PostPageProps> = ({postId}) => {
+  const [postInfo, setPostInfo] = useState<PostInfo | null> (null);
+  const [loadingPost, setLoadingPost] = useState(false);
+
+  const options = {
+    wordwrap: 130
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+  
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    };
+  
+    return date.toLocaleDateString(undefined, options);
+  };
+
+  const getPostInfo = () => {
+    setLoadingPost(true);
+    const url = `${process.env.NEXT_PUBLIC_ALLPOSTS}/${postId}`;
+    axios.get(url, {withCredentials: true})
+    .then((response) => {
+      setPostInfo(response.data);
+    })
+    .catch((err) => {
+      console.log(err);
+      toast.error("Please try checking the internet");
+    })
+    .finally(() => {
+      setLoadingPost(false);
+    })
+  }
+
+  useEffect(() => {
+    getPostInfo();
+  }, [postId])
+
   return (
     <div>
+      {
+        loadingPost ? <div className="w-full lg:max-w-6xl md:md:max-w-3xl h-[80vh] flex justify-center items-center flex-col">
+        <div className="loading loading-bars loading-lg"></div>
+        <p className="font-extrabold font-btnfont">Please Wait</p>
+      </div>: 
+      <>
       <div>
         <h1 className="text-4xl lg:text-6xl font-extrabold">
-          These fintech companies are hiring, despite a rough market in 2024
+          {postInfo?.title}
         </h1>
       </div>
       <div className="py-4 flex flex-1 justify-between">
         <div>
-          <p className="font-semibold">Nairita Hazra</p>
-          <p className="font-semibold">9:15 AM PDT • August 26, 2024</p>
+          <p className="font-semibold">@{postInfo?.author?.userName}</p>
+          <p className="font-semibold">{postInfo?.createdAt ? formatDate(postInfo?.createdAt) : "Date not available"}</p>
         </div>
         <div className="flex cursor-pointer">
           <FaRegComment size={25} className="" />
           <span className="hidden md:block mx-2 font-semibold">Comment</span>
         </div>
       </div>
-      <Image
-        className="lg:h-[10%] lg:w-[80%] lg:mx-auto"
-        src={Island}
-        alt="Picture"
-      />
+      <img src={postInfo?.imgUrl} alt="Picture" className="lg:h-[10%] lg:w-[80%] lg:mx-auto" />
       <div className="my-4">
         <p>
-          The fintech segment, which saw massive growth during the pandemic and
-          immediately after, has had a fairly rough 2024.
+          {postInfo?.summary}
         </p>
         <br />
-        <p>
-          But while the rapid pace of funding has slowed, many fintechs are
-          continuing to see growth and expand their teams. In an effort to
-          better understand just how many fintechs might fit into this category,
-          I put out a call asking for fintech companies that are hiring. After
-          just over an hour, I had received more than a dozen responses. After
-          just a few days, I heard from dozens more. The sheer number — and
-          quality — of responses was surprising even to me, someone who writes
-          about this space on a regular basis. TechCrunch isn’t a job board, of
-          course. This isn’t a listing of all available roles in fintech. But if
-          you were recently laid off, are a recent graduate or are just looking
-          for a change, this will be a good place to start. And we plan to
-          update this page regularly over time. Oh, and if you end up finding a
-          job through this post, let me know on Twitter. Everyone likes a happy
-          ending.
+        <p className=" flex flex-wrap w-full">
+          {postInfo?.description ? parse(postInfo.description) : "Description not available"}
         </p>
       </div>
+      </>
+      }
     </div>
   );
 };

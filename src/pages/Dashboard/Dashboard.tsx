@@ -6,7 +6,6 @@ import { useAuthContext } from "@/context/AuthContext";
 import useGetAllPosts from "@/hooks/useGetAllPosts";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { FaPlusSquare } from "react-icons/fa";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -28,8 +27,16 @@ const Dashboard = () => {
   const handlePlus = () => {
     router.push("/create-post");
   };
+  const handlePostClick = (id:String) => {
+    router.push(`/post/${id}`);
+  }
 
   const { authUser } = useAuthContext();
+
+  // Sorting the posts by new posts at first with the help of createdAt
+  const sortedPosts = posts.slice().sort((a: any, b: any) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 
   return (
     <div className="">
@@ -54,8 +61,11 @@ const Dashboard = () => {
             <p className="font-extrabold font-btnfont">Please Wait</p>
           </div>
         ) : (
-          posts.map((post: any, index: number) => (
-            <div className="mb-5 md:mx-4" key={index}>
+          sortedPosts.map((post: any, index: number) => (
+            <div className="mb-5 md:mx-4 cursor-pointer" 
+            key={index}
+            onClick={() => handlePostClick(post._id)}
+            >
               <div className="grid md:grid-cols-3 place-content-between">
                 <div className="">
                   <h2 className="font-extrabold text-2xl text-center md:text-left">
@@ -75,7 +85,7 @@ const Dashboard = () => {
                   />
                 </div>
               </div>
-              <Separator />
+              <Separator className="mt-5" />
             </div>
           ))
         )}
