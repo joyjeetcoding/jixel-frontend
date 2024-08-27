@@ -33,18 +33,12 @@ const Dashboard = () => {
 
   return (
     <div className="">
+      
       {authUser ? (
-        <FaPlusSquare
-          onClick={handlePlus}
-          className="cursor-pointer md:hidden absolute right-10 top-4"
-          size={30}
-        />
-      ) : null}
-      {authUser ? (
-        <div className="relative  mx-4 md:max-w-3xl lg:max-w-6xl md:mx-auto ">
+        <div className="p-4 md:max-w-3xl lg:max-w-6xl md:mx-auto ">
           <Button
             onClick={handlePlus}
-            className="hidden md:block absolute top-14 right-0"
+            className="hover:bg-yellow-400 hover:text-black hover:font-bold"
           >
             <span className="">Create New Post</span>
           </Button>
@@ -53,9 +47,9 @@ const Dashboard = () => {
 
       {/* Desgin of the post div starts */}
 
-      <div className="absolute top-[20%] mx-4 md:max-w-3xl lg:max-w-6xl md:mx-auto">
+      <div className=" mx-4 md:max-w-3xl lg:max-w-6xl md:mx-auto">
         {loading ? (
-          <div className="w-screen lg:max-w-6xl md:md:max-w-3xl h-[80vh] flex justify-center items-center flex-col">
+          <div className="w-full lg:max-w-6xl md:md:max-w-3xl h-[80vh] flex justify-center items-center flex-col">
             <div className="loading loading-bars loading-lg"></div>
             <p className="font-extrabold font-btnfont">Please Wait</p>
           </div>
