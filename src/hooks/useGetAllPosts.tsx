@@ -1,18 +1,24 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-const useGetAllPosts = () => {
+const useGetAllPosts = (page: number, limit: number) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const getPosts = async () => {
       setLoading(true);
 
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_ALLPOSTS}`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_ALLPOSTS}?page=${page}&limit=${limit}`
+        );
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch");
+        }
 
         const data = await res.json();
 
@@ -20,20 +26,20 @@ const useGetAllPosts = () => {
           toast.error(data.error);
         }
 
-        setPosts(data);
+        setPosts(data.posts);
+        setTotalPages(data.totalPages);
       } catch (error: any) {
         toast.error(error.message);
         console.log(error.message);
-        
       } finally {
         setLoading(false);
       }
     };
 
     getPosts();
-  }, []);
+  }, [page, limit]);
 
-  return { loading, posts };
+  return { loading, posts, totalPages };
 };
 
 export default useGetAllPosts;

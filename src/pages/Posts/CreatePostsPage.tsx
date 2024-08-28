@@ -45,11 +45,11 @@ const CreatePostsPage = () => {
   const form = useForm<PostsFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      summary: '',
+      title: "",
+      summary: "",
       imgUrl: undefined,
-      description: ''
-    }
+      description: "",
+    },
   });
 
   const { createPost, isLoading } = useCreatePost();
@@ -58,11 +58,16 @@ const CreatePostsPage = () => {
   const [content, setContent] = useState("");
   const { handleSubmit, watch } = form;
 
+ 
+
   const config = useMemo(
     () => ({
       readonly: false, // all options from https://xdsoft.net/jodit/docs/
       placeholder: "Start typing...",
       tabIndex: 1,
+      useSearch: false,
+      buttons:
+        "bold,italic,underline,strikethrough,eraser,ul,ol,font,fontsize,paragraph,lineHeight,superscript,subscript,classSpan,file,image,video,spellcheck, align left",
       additionalStyles: `
       .jodit-wysiwyg {
         padding-left: 10px;
@@ -88,11 +93,8 @@ const CreatePostsPage = () => {
     formData.append("title", data.title);
     formData.append("summary", data.summary);
     formData.append("description", content);
-   
-    if(data.imgUrl)
-      formData.append("imgUrl", data.imgUrl)
 
-    
+    if (data.imgUrl) formData.append("imgUrl", data.imgUrl);
 
     console.log(formData);
 
@@ -100,10 +102,9 @@ const CreatePostsPage = () => {
       await createPost(formData);
       console.log("Posted Successfully");
       toast.success("Posted Successfully");
-
     } catch (error) {
       console.log("Error Creating Post", error);
-      toast.error("Error in Creating Post.. Try signing in again")
+      toast.error("Error in Creating Post.. Try signing in again");
     }
   };
 
@@ -163,7 +164,7 @@ const CreatePostsPage = () => {
                       onChange={(e) => {
                         field.onChange(
                           e.target.files ? e.target.files[0] : null
-                        )
+                        );
                       }}
                     />
                   </FormControl>
@@ -190,13 +191,14 @@ const CreatePostsPage = () => {
                 </FormItem>
               )}
             />
-            {
-              isLoading ? <Button className="w-full" disabled>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Please wait
-            </Button>  : 
-            <Button className="w-full my-5">Create Jixel</Button>
-            }
+            {isLoading ? (
+              <Button className="w-full" disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <Button className="w-full my-5">Create Jixel</Button>
+            )}
           </form>
         </Form>
       </div>

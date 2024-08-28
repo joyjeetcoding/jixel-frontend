@@ -91,7 +91,7 @@ const PostsPage: React.FC<PostPageProps> = ({postId}) => {
           {postInfo?.summary}
         </p>
         <br />
-        <p className=" flex flex-wrap w-full">
+        <p className="">
           {postInfo?.description ? parse(postInfo.description) : "Description not available"}
         </p>
       </div>
