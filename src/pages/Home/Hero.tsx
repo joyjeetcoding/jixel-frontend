@@ -37,7 +37,7 @@ const Hero = () => {
         >
           <Image src={Idea} alt="idea-png" />
         </motion.div>
-        <div className="absolute right-[25%] font-extrabold bottom-5 text-right w-[40%]  text-2xl font-btnfont hidden lg:block">
+        <div className="absolute right-[25%] font-extrabold bottom-5 text-right w-[40%] font-merri text-2xl hidden lg:block">
           {text1.map((el, i) => (
             <motion.span
               initial={{ opacity: 0 }}
@@ -71,7 +71,7 @@ const Hero = () => {
             alt="idea-png"
           />
         </motion.div>
-        <div className="absolute top-[30%] left-4 text-5xl font-btnfont font-semibold md:hidden">
+        <div className="absolute top-[30%] left-4 text-5xl font-merri font-semibold md:hidden">
           {text2.map((el, i) => (
             <motion.span
               initial={{ opacity: 0 }}
@@ -87,7 +87,7 @@ const Hero = () => {
             </motion.span>
           ))}
         </div>
-        <div className="absolute top-[30%] left-4 text-5xl font-btnfont w-[55%] font-semibold hidden md:block">
+        <div className="absolute top-[30%] left-4 text-5xl font-merri w-[55%] font-semibold hidden md:block">
           {text3.map((el, i) => (
             <motion.span
               initial={{ opacity: 0 }}

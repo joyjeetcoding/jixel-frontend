@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { FaRegComment } from "react-icons/fa";
+import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import axios from "axios";
 import toast from "react-hot-toast";
 import parse from "html-react-parser";
 import Comment from "./Comment";
 import { Separator } from "@/components/ui/separator";
+import { useAuthContext } from "@/context/AuthContext";
 
 interface PostPageProps {
   postId: string;
@@ -22,17 +23,14 @@ interface PostInfo {
   };
   userName: string;
   createdAt: string;
+  loveCount: number;
+  lovedBy: string[];
+  userHasLoved: boolean;
 }
 
 const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
   const [postInfo, setPostInfo] = useState<PostInfo | null>(null);
   const [loadingPost, setLoadingPost] = useState(false);
-
-  const commentSectionRef = useRef<HTMLDivElement>(null);
-
-  const handleScrolltoComments = () => {
-    commentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -67,6 +65,37 @@ const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
     getPostInfo();
   }, [postId]);
 
+  const handleLovePost = async () => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_LOVEPOSTS}/${postId}`,
+        {},
+        { withCredentials: true }
+      );
+
+      setPostInfo((prevPostInfo) =>
+        prevPostInfo
+          ? {
+              ...prevPostInfo,
+              loveCount: prevPostInfo.loveCount + 1,
+              userHasLoved: true,
+            }
+          : null
+      );
+
+      toast.success("Post Loved Successfully");
+    } catch (error: any) {
+      console.log(error);
+      if (error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Login to give Love React");
+      }
+    }
+  };
+
+  const { authUser } = useAuthContext();
+
   return (
     <div>
       {loadingPost ? (
@@ -89,12 +118,24 @@ const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
                   ? formatDate(postInfo?.createdAt)
                   : "Date not available"}
               </p>
+              <p className="text-pink-500 font-extrabold">
+                Love Count: {postInfo?.loveCount}
+              </p>
             </div>
-            <div onClick={handleScrolltoComments} className="flex cursor-pointer font-merri hover:text-yellow-500">
-              <FaRegComment size={25} className="" />
-              <span className="hidden md:block mx-2 font-semibold">
-                Comment
-              </span>
+            <div
+              onClick={handleLovePost}
+              className={`${
+                authUser
+                  ? `${
+                      postInfo?.userHasLoved
+                        ? "text-pink-500 flex cursor-pointer font-merri hover:text-pink-500"
+                        : "text-black flex cursor-pointer font-merri hover:text-pink-500"
+                    }`
+                  : `disabled flex cursor-pointer font-merri`
+              } `}
+            >
+              <FaHeart size={25} className="" />
+              <span className="hidden md:block mx-2 font-semibold">Love</span>
             </div>
           </div>
           <img
@@ -114,9 +155,9 @@ const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
             </p>
           </div>
           <Separator className="pb-1 mb-4" />
-          <div ref={commentSectionRef}>
-            <Comment />
-          </div>
+          <p className="text-center text-lg font-semibold font-merri">
+            End of the Post
+          </p>
         </>
       )}
     </div>
