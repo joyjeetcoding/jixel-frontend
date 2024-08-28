@@ -76,6 +76,7 @@ const config = {
     fontFamily: {
       logo: "Playwrite CU",
       btnfont: "Noto Serif",
+      merri: ["Merriweather", "serif"]
     },
   },
   plugins: [require("tailwindcss-animate"), require("daisyui")],

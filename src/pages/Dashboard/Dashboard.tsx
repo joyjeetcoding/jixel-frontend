@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import useGetAllPosts from "@/hooks/useGetAllPosts";
 import { Button } from "@/components/ui/button";
+import { useAuthContext } from "@/context/AuthContext";
 
 const Dashboard = () => {
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const limit = 5;
+  const limit = 3;
   const { loading, posts, totalPages } = useGetAllPosts(page, limit);
 
   const handleNextPage = () => {
@@ -26,8 +27,24 @@ const Dashboard = () => {
     router.push(`/post/${id}`);
   };
 
+  const { authUser } = useAuthContext();
+
+  const handlePlus = () => {
+    router.push("/create-post");
+  }
+
   return (
-    <div className="p-4 md:max-w-3xl lg:max-w-6xl md:mx-auto">
+    <div className="font-merri p-4 md:max-w-3xl lg:max-w-6xl md:mx-auto">
+      {authUser ? (
+        <div className="p-4 md:max-w-3xl lg:max-w-6xl md:mx-auto ">
+          <Button
+            onClick={handlePlus}
+            className="hover:bg-yellow-400 hover:text-black hover:font-bold"
+          >
+            <span className="">Create New Post</span>
+          </Button>
+        </div>
+      ) : null}
       {loading ? (
         <div className="w-full lg:max-w-6xl md:max-w-3xl h-[80vh] flex justify-center items-center flex-col">
           <div className="loading loading-bars loading-lg"></div>
