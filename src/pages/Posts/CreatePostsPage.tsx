@@ -14,12 +14,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import JoditEditor from "jodit-react";
 import "../../components/stylesforEditor/styles.scss";
 import { useCreatePost } from "@/hooks/useCreatePost";
 import toast, { Toaster } from "react-hot-toast";
 import { ButtonLoading } from "@/components/LoadingButton";
 import { Loader2 } from "lucide-react";
+import dynamic from "next/dynamic";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -42,6 +42,11 @@ const formSchema = z.object({
 type PostsFormData = z.infer<typeof formSchema>;
 
 const CreatePostsPage = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  const [content, setContent] = useState("");
+  const editor = useRef(null);
+  const { createPost, isLoading } = useCreatePost();
+
   const form = useForm<PostsFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,11 +57,17 @@ const CreatePostsPage = () => {
     },
   });
 
-  const { createPost, isLoading } = useCreatePost();
+  const { handleSubmit } = form;
 
-  const editor = useRef(null);
-  const [content, setContent] = useState("");
-  const { handleSubmit, watch } = form;
+  const JoditEditor = dynamic(() => import("jodit-react"), {
+    ssr: false,
+    loading: () => <p>Loading editor...</p>,
+  });
+
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
  
 
@@ -88,6 +99,7 @@ const CreatePostsPage = () => {
   );
 
   const onSubmit = async (data: PostsFormData) => {
+    if (!isMounted) return;
     const formData = new FormData();
 
     formData.append("title", data.title);
@@ -107,6 +119,11 @@ const CreatePostsPage = () => {
       toast.error("Error in Creating Post.. Try signing in again");
     }
   };
+
+
+  if (!isMounted) {
+    return null; // or a loading spinner
+  }
 
   return (
     <div className="md:max-w-3xl lg:max-w-6xl md:mx-auto ">
@@ -180,11 +197,13 @@ const CreatePostsPage = () => {
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <JoditEditor
-                      {...field}
                       ref={editor}
                       value={content}
                       config={config}
-                      onBlur={(newContent) => setContent(newContent)}
+                      onBlur={(newContent) => {
+                        setContent(newContent);
+                        field.onChange(newContent);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />

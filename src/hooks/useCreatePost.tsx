@@ -1,5 +1,5 @@
+"use client"
 import { useMutation } from "react-query";
-
 
 export const useCreatePost = () => {
   const createMyPostRequest = async (formData: FormData) => {

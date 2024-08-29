@@ -70,20 +70,28 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId}) => {
   const getUserInfo = () => {
     setLoadinggetuser(true);
     const url = `${process.env.NEXT_PUBLIC_USERPROFILE}/${userId}`;
+  
     axios
-      .get(url,{ withCredentials: true })
+      .get(url, { withCredentials: true })
       .then((response) => {
         setUserInfo(response.data);
         form.reset(response.data);
       })
       .catch((err) => {
-        console.log(err);
-        toast.error("Unauthorized Access - Login First")
+        console.error("Axios Error:", err.response || err.message || err);
+        if (err.response?.status === 401) {
+          toast.error("Unauthorized Access - Login First");
+        } else if (err.response?.status === 403) {
+          toast.error("Forbidden - You don't have permission");
+        } else {
+          toast.error("An error occurred. Please try again.");
+        }
       })
       .finally(() => {
         setLoadinggetuser(false);
       });
   };
+  
 
   useEffect(() => {
     getUserInfo();

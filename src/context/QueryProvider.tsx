@@ -14,8 +14,9 @@ const queryClient = new QueryClient({
   })
 
 const QueryWrapper = ({children}: Props) => {
+ 
     return (
-        <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient} contextSharing={true}>
             {children}
         </QueryClientProvider>
     )

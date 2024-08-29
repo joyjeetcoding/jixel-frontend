@@ -1,4 +1,5 @@
-import { User } from "@/pages/types/types";
+"use client"
+import { User } from "@/types/types";
 import { useMutation } from "react-query";
 import toast from "react-hot-toast";
 
