@@ -44,22 +44,31 @@ const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
     return date.toLocaleDateString(undefined, options);
   };
 
-  const getPostInfo = () => {
+  const getPostInfo = async () => {
     setLoadingPost(true);
-    const url = `${process.env.NEXT_PUBLIC_ALLPOSTS}/${postId}`;
-    axios
-      .get(url, { withCredentials: true })
-      .then((response) => {
-        setPostInfo(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Please try checking the internet");
-      })
-      .finally(() => {
-        setLoadingPost(false);
+    const url = `/api/user/createPost/${postId}`;
+    try {
+      const token = localStorage.getItem("jwt");
+  
+      if (!token) {
+        throw new Error("No token found");
+      }
+  
+      const response = await axios.get(url, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       });
+  
+      setPostInfo(response.data);
+    } catch (err: any) {
+      console.log(err);
+      toast.error("Please try checking the internet");
+    } finally {
+      setLoadingPost(false);
+    }
   };
+  
 
   useEffect(() => {
     getPostInfo();
@@ -67,10 +76,20 @@ const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
 
   const handleLovePost = async () => {
     try {
+      const token = localStorage.getItem("jwt");
+
+      if (!token) {
+        throw new Error("No token found");
+      }
+
       await axios.post(
-        `${process.env.NEXT_PUBLIC_LOVEPOSTS}/${postId}`,
+        `/api/user/lovePost/${postId}`,
         {},
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       setPostInfo((prevPostInfo) =>
@@ -86,7 +105,7 @@ const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
       toast.success("Post Loved Successfully");
     } catch (error: any) {
       console.log(error);
-      if (error.response.data.message) {
+      if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
         toast.error("Login to give Love React");

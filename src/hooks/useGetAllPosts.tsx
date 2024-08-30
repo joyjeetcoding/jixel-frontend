@@ -13,7 +13,7 @@ const useGetAllPosts = (page: number, limit: number) => {
 
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_ALLPOSTS}?page=${page}&limit=${limit}`
+          `/api/user/createPost/?page=${page}&limit=${limit}`
         );
 
         if (!res.ok) {

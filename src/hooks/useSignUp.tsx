@@ -41,7 +41,6 @@ const useSignUp = () => {
           password,
           confirmPassword,
         }),
-        credentials: "include", // Include credentials if using cookies
       });
 
       const data = await res.json();
@@ -52,6 +51,7 @@ const useSignUp = () => {
       }
 
       localStorage.setItem("registered-user", JSON.stringify(data));
+      localStorage.setItem("jwt", data.token);
 
       toast.success("Registration Successful");
       setOpen(false);

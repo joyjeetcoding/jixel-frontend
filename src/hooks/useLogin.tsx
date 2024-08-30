@@ -35,7 +35,6 @@ const useLogin = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
-        credentials: "include", // Ensure cookies are included in the request
       });
   
       const data = await res.json();
@@ -44,7 +43,10 @@ const useLogin = () => {
       }
   
       console.log(data);
-  
+      
+      localStorage.setItem("jwt", data.token);
+
+
       toast.success("Login Successful");
   
       localStorage.setItem("registered-user", JSON.stringify(data));

@@ -37,22 +37,33 @@ const DropDownMenu = () => {
 
   const userId = authUser?._id;
 
-  const getUserInfo = () => {
-    const url = `${process.env.NEXT_PUBLIC_USERPROFILE}/${userId}`;
-    axios
-      .get(url, { withCredentials: true })
-      .then((response) => {
-        setUserInfo(response.data);
-      })
-      .catch((err) => {
-        console.log("Error in getting Profile image", err);
-        toast.error("Sign In Again");
+  const getUserInfo = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+  
+      if (!token) {
+        throw new Error("No token found");
+      }
+  
+      const url = `/api/auth/author/${userId}`;
+      
+      const response = await axios.get(url, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       });
+  
+      setUserInfo(response.data);
+    } catch (err) {
+      console.log("Error in getting Profile image", err);
+      toast.error("Sign In Again");
+    }
   };
-
+  
   useEffect(() => {
     getUserInfo();
   }, [userId]);
+  
 
   return (
     <DropdownMenu>

@@ -60,17 +60,27 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
     const getUserInfo = async () => {
       try {
         setLoadinggetuser(true);
-        const url = `${process.env.NEXT_PUBLIC_USERPROFILE}/${userId}`;
-
+        const url = `/api/auth/author/${userId}`;
+  
         console.log("Fetching user info from URL:", url);
-
-        const response = await axios.get(url, { withCredentials: true });
-
+  
+        const token = localStorage.getItem("jwt");
+  
+        if (!token) {
+          throw new Error("No token found");
+        }
+  
+        const response = await axios.get(url, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+  
         console.log("Response received:", response.data);
-
+  
         setUserInfo(response.data);
         form.reset(response.data);
-      } catch (err:any) {
+      } catch (err: any) {
         console.error("Axios Error:", err.response || err.message || err);
         if (err.response?.status === 401) {
           toast.error("Unauthorized Access - Login First");
@@ -83,9 +93,10 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
         setLoadinggetuser(false);
       }
     };
-
+  
     getUserInfo();
   }, [userId]);
+  
 
   const onSubmit = async (formDataJson: UserFormData) => {
     // Handle file separately

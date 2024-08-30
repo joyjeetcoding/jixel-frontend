@@ -23,6 +23,7 @@ const useLogOut = () => {
             throw new Error(data.error);
         }
         localStorage.removeItem("registered-user");
+        localStorage.removeItem("jwt");
         setAuthUser(null);
     } catch (error:any) {
         toast.error(error.message);
