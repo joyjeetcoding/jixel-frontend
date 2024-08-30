@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import { useMutation } from "react-query";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export const useCreatePost = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -10,17 +10,24 @@ export const useCreatePost = () => {
   }, []);
 
   const createMyPostRequest = async (formData: FormData) => {
+    const token = localStorage.getItem("jwt");
+
+    if (!token) {
+      throw new Error("No token found");
+    }
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/createPost`,
       {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
-        credentials: "include"
       }
     );
 
-    console.log("Response after Posts Form Submit",response);
-    
+    console.log("Response after Posts Form Submit", response);
 
     if (!response.ok) {
       throw new Error("Failed to create Post");
