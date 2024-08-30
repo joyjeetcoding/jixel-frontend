@@ -2,8 +2,15 @@
 import { User } from "@/types/types";
 import { useMutation } from "react-query";
 import toast from "react-hot-toast";
+import { useEffect, useState } from 'react';
 
 export const useUpdateAuthor = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const useUpdateAuthorRequest = async (
     userFormData: FormData,
     userId: string
@@ -58,17 +65,28 @@ export const useUpdateAuthor = () => {
     return useUpdateAuthorRequest(data.userFormData, data.userId);
   };
 
-  const {
-    mutateAsync: updateUserStatus,
-    isLoading
-  } = useMutation(mutationFunction, {
+  const mutation = useMutation(mutationFunction, {
     onSuccess: () => {
-      toast.success("Author Updated");
+      if (isMounted) {
+        toast.success("Author Updated");
+      }
     },
-    onError:(err:any) => {
-      toast.error(err)
+    onError: (err: any) => {
+      if (isMounted) {
+        toast.error(err);
+      }
     }
   });
 
-  return { updateUserStatus, isLoading };
+  if (!isMounted) {
+    return { 
+      updateUserStatus: () => Promise.resolve(), 
+      isLoading: false 
+    };
+  }
+
+  return { 
+    updateUserStatus: mutation.mutateAsync, 
+    isLoading: mutation.isLoading 
+  };
 };

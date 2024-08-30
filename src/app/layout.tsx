@@ -23,7 +23,6 @@ export default function RootLayout({
         <QueryWrapper>
           <AuthProviderWrapper>
             <Toaster />
-
             {children}
           </AuthProviderWrapper>
         </QueryWrapper>

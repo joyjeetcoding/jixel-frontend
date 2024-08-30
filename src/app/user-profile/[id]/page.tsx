@@ -4,12 +4,17 @@ import UserHomePage from '@/pages/User-Profile/UserHomePage'
 import { NextPage } from 'next';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
+import dynamic from 'next/dynamic'
 
 interface UserProfileProps {
   params: {
     id: string
   }
 }
+
+
+const DynamicUserHomePage = dynamic(() => import('../../../pages/User-Profile/UserHomePage'), { ssr: false })
+
 
 const UserProfile: NextPage<UserProfileProps> = () => {
 
@@ -29,8 +34,9 @@ const UserProfile: NextPage<UserProfileProps> = () => {
   },[authUser, router])
 
   return (
+    
     <div>
-      <UserHomePage userId={userId as string} />
+      <DynamicUserHomePage userId={userId as string} />
     </div>
   )
 }

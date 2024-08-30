@@ -1,25 +1,24 @@
-"use client"
+"use client";
 import { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 interface Props {
-    children: ReactNode;
+  children: ReactNode;
 }
 const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false
-      }
-    }
-  })
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-const QueryWrapper = ({children}: Props) => {
- 
-    return (
-        <QueryClientProvider client={queryClient} contextSharing={true}>
-            {children}
-        </QueryClientProvider>
-    )
-}
+const QueryWrapper = ({ children }: Props) => {
+  return (
+    <QueryClientProvider client={queryClient} contextSharing={true}>
+      {children}
+    </QueryClientProvider>
+  );
+};
 
 export default QueryWrapper;

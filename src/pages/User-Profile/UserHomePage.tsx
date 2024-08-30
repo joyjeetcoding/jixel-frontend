@@ -41,43 +41,30 @@ interface UserInfo {
 }
 type UserFormData = z.infer<typeof formSchema>;
 
-
-const UserHomePage: React.FC<UserHomePageProps> = ({ userId}) => {
+const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {}, // Avoid changing defaultValues dynamically
   });
-
-  const {updateUserStatus, isLoading} = useUpdateAuthor();
 
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loadinggetuser, setLoadinggetuser] = useState(false);
-  
-  const onSubmit = async (formDataJson: UserFormData) => {
-    // Handle file separately
-    const formData = new FormData();
-    formData.append("userName", formDataJson.userName);
-    formData.append("fullName", formDataJson.fullName);
-    if(formDataJson.email)
-      formData.append("email", formDataJson.email);
-    if(formDataJson.imageFile)
-      formData.append("imageFile", formDataJson.imageFile)
-    
-    
-      await updateUserStatus({userFormData:formData, userId});
-    
-  };
+  const [isMounted, setIsMounted] = useState(false);
+  const { updateUserStatus, isLoading } = useUpdateAuthor();
 
-  const getUserInfo = () => {
-    setLoadinggetuser(true);
-    const url = `${process.env.NEXT_PUBLIC_USERPROFILE}/${userId}`;
-  
-    axios
-      .get(url, { withCredentials: true })
-      .then((response) => {
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        setLoadinggetuser(true);
+        const url = `${process.env.NEXT_PUBLIC_USERPROFILE}/${userId}`;
+        const response = await axios.get(url, { withCredentials: true });
         setUserInfo(response.data);
         form.reset(response.data);
-      })
-      .catch((err) => {
+      } catch (err:any) {
         console.error("Axios Error:", err.response || err.message || err);
         if (err.response?.status === 401) {
           toast.error("Unauthorized Access - Login First");
@@ -86,16 +73,29 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId}) => {
         } else {
           toast.error("An error occurred. Please try again.");
         }
-      })
-      .finally(() => {
+      } finally {
         setLoadinggetuser(false);
-      });
-  };
-  
+      }
+    };
 
-  useEffect(() => {
     getUserInfo();
   }, [userId]);
+
+  const onSubmit = async (formDataJson: UserFormData) => {
+    // Handle file separately
+    const formData = new FormData();
+    formData.append("userName", formDataJson.userName);
+    formData.append("fullName", formDataJson.fullName);
+    if (formDataJson.email) formData.append("email", formDataJson.email);
+    if (formDataJson.imageFile)
+      formData.append("imageFile", formDataJson.imageFile);
+
+    await updateUserStatus({ userFormData: formData, userId });
+  };
+
+  if (!isMounted) {
+    return null; // or a loading spinner
+  }
 
   return (
     <>
@@ -127,7 +127,7 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId}) => {
                             onChange={(e) => {
                               field.onChange(
                                 e.target.files ? e.target.files[0] : null
-                              )
+                              );
                             }}
                           />
                         </FormControl>
@@ -138,12 +138,11 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId}) => {
                   <FormField
                     control={form.control}
                     name="email"
-                    disabled
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input {...field} defaultValue={userInfo?.email} />
+                          <Input disabled {...field} defaultValue={userInfo?.email} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

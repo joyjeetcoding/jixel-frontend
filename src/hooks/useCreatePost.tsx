@@ -1,7 +1,14 @@
 "use client"
 import { useMutation } from "react-query";
+import { useEffect, useState } from 'react';
 
 export const useCreatePost = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const createMyPostRequest = async (formData: FormData) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/createPost`,
@@ -20,17 +27,21 @@ export const useCreatePost = () => {
     }
   };
 
-  const {
-    mutateAsync: createPost,
-    isLoading,
-    isError,
-    isSuccess,
-  } = useMutation(createMyPostRequest);
+  const mutation = useMutation(createMyPostRequest);
+
+  if (!isMounted) {
+    return {
+      createPost: () => Promise.resolve(),
+      isLoading: false,
+      isError: false,
+      isSuccess: false,
+    };
+  }
 
   return {
-    createPost,
-    isLoading,
-    isError,
-    isSuccess,
+    createPost: mutation.mutateAsync,
+    isLoading: mutation.isLoading,
+    isError: mutation.isError,
+    isSuccess: mutation.isSuccess,
   };
 };
