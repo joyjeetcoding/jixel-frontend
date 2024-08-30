@@ -1,5 +1,5 @@
 "use client"
-import PostsPage from "@/pages/Posts/PostsPage";
+import PostsPage from "@/allpages/Posts/PostsPage";
 import { NextPage } from "next";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";

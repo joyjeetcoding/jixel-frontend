@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import Dashboard from "@/pages/Dashboard/Dashboard";
+import Dashboard from "@/allpages/Dashboard/Dashboard";
 import React from "react";
 
 const page = () => {

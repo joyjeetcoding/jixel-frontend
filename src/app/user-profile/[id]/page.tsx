@@ -1,6 +1,6 @@
 "use client"
 import { useAuthContext } from '@/context/AuthContext';
-import UserHomePage from '@/pages/User-Profile/UserHomePage'
+import UserHomePage from '@/allpages/User-Profile/UserHomePage'
 import { NextPage } from 'next';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
@@ -13,7 +13,7 @@ interface UserProfileProps {
 }
 
 
-const DynamicUserHomePage = dynamic(() => import('../../../pages/User-Profile/UserHomePage'), { ssr: false })
+const DynamicUserHomePage = dynamic(() => import('../../../allpages/User-Profile/UserHomePage'), { ssr: false })
 
 
 const UserProfile: NextPage<UserProfileProps> = () => {

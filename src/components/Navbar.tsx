@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import DropDownMenu from "./DropDownMenu";
-import Login from "@/pages/LoginRegsiter/Login";
+import Login from "@/allpages/LoginRegsiter/Login";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
 
