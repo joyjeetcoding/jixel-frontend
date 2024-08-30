@@ -19,7 +19,7 @@ Jixel is built using a robust and modern tech stack, ensuring high performance, 
 ### **Frontend:**
 - **Next.js**: The core framework powering Jixel, enabling server-side rendering and static site generation.
 - **TypeScript**: Ensures type safety and better code quality.
-- **JoditEditor**: A powerful WYSIWYG editor for rich text formatting, allowing users to create well-structured and visually appealing posts.
+- **JoditEditor**: A powerful WYSIWYG(What You See Is What You Get) editor for rich text formatting, allowing users to create well-structured and visually appealing posts.
 - **Shadcn**: For building custom, scalable components.
 - **DaisyUI**: A Tailwind CSS-based component library for beautiful and responsive design.
 - **Tailwind CSS**: A utility-first CSS framework for custom styling.
