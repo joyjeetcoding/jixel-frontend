@@ -48,17 +48,8 @@ const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
     setLoadingPost(true);
     const url = `/api/user/createPost/${postId}`;
     try {
-      const token = localStorage.getItem("jwt");
   
-      if (!token) {
-        throw new Error("No token found");
-      }
-  
-      const response = await axios.get(url, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
+      const response = await axios.get(url);
   
       setPostInfo(response.data);
     } catch (err: any) {
