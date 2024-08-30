@@ -61,7 +61,13 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
       try {
         setLoadinggetuser(true);
         const url = `${process.env.NEXT_PUBLIC_USERPROFILE}/${userId}`;
+
+        console.log("Fetching user info from URL:", url);
+
         const response = await axios.get(url, { withCredentials: true });
+
+        console.log("Response received:", response.data);
+
         setUserInfo(response.data);
         form.reset(response.data);
       } catch (err:any) {

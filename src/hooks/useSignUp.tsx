@@ -12,13 +12,22 @@ const useSignUp = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const validateInputs = ({ fullName, email, password, confirmPassword }: Props) => {
+    if (!fullName || !email || !password || !confirmPassword) {
+      toast.error("All fields are required");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
 
-  const signUp = async ({
-    fullName,
-    email,
-    password,
-    confirmPassword,
-  }: Props) => {
+  const signUp = async ({ fullName, email, password, confirmPassword }: Props) => {
+    const isValid = validateInputs({ fullName, email, password, confirmPassword });
+    if (!isValid) return;
+
     setLoading(true);
     try {
       const res = await fetch("/api/auth/signup", {
@@ -32,6 +41,7 @@ const useSignUp = () => {
           password,
           confirmPassword,
         }),
+        credentials: "include", // Include credentials if using cookies
       });
 
       const data = await res.json();
@@ -43,11 +53,10 @@ const useSignUp = () => {
 
       localStorage.setItem("registered-user", JSON.stringify(data));
 
-
       toast.success("Registration Successful");
       setOpen(false);
     } catch (error: any) {
-      console.log(error);
+      console.log("SignUp Error:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);

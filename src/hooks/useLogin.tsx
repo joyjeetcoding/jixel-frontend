@@ -24,9 +24,9 @@ const useLogin = () => {
 
   const login = async ({ email, password }: Props) => {
     const success = handleInputErrors({ email, password });
-
+  
     if (!success) return;
-
+  
     setLoading(true);
     try {
       const res = await fetch("/api/auth/login", {
@@ -35,22 +35,23 @@ const useLogin = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        credentials: "include", // Ensure cookies are included in the request
       });
-
+  
       const data = await res.json();
       if (data.error) {
         throw new Error(data.error);
       }
-
+  
       console.log(data);
-
-      toast.success("Login Successful")
-
+  
+      toast.success("Login Successful");
+  
       localStorage.setItem("registered-user", JSON.stringify(data));
-
+  
       setAuthUser(data);
       setOpen(false);
-
+  
     } catch (error: any) {
       toast.error(error.message);
     } finally {
