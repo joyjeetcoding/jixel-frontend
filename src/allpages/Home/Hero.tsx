@@ -116,7 +116,7 @@ const Hero = () => {
         }}
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="absolute left-[10%] md:bottom-[10%] bottom-[2%]"
+        className="absolute left-[10%] bottom-[10%]"
       >
         <Button onClick={handleExplore} className=" font-extrabold px-9 py-6 hover:bg-yellow-400 hover:text-black">
           Click Here to Explore
