@@ -44,7 +44,6 @@ const useSignUp = () => {
       });
 
       const data = await res.json();
-      console.log(data);
 
       if (data.error) {
         throw new Error(data.error);
@@ -56,7 +55,6 @@ const useSignUp = () => {
       toast.success("Registration Successful");
       setOpen(false);
     } catch (error: any) {
-      console.log("SignUp Error:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);

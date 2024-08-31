@@ -108,14 +108,11 @@ const CreatePostsPage = () => {
 
     if (data.imgUrl) formData.append("imgUrl", data.imgUrl);
 
-    console.log(formData);
 
     try {
       await createPost(formData);
-      console.log("Posted Successfully");
       toast.success("Posted Successfully");
     } catch (error) {
-      console.log("Error Creating Post", error);
       toast.error("Error in Creating Post.. Try signing in again");
     }
   };

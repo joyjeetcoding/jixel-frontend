@@ -13,10 +13,8 @@ const PostProfile: NextPage<PostProfileProps> = () => {
   const router = useRouter();
   
   const params = useParams();
-  console.log("Params for Post", params);
 
   const postId = params?.id;
-  console.log("postId", postId);
   
   
 

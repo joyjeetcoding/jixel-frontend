@@ -62,7 +62,6 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
         setLoadinggetuser(true);
         const url = `/api/auth/author/${userId}`;
   
-        console.log("Fetching user info from URL:", url);
   
         const token = localStorage.getItem("jwt");
   
@@ -76,12 +75,10 @@ const UserHomePage: React.FC<UserHomePageProps> = ({ userId }) => {
           }
         });
   
-        console.log("Response received:", response.data);
   
         setUserInfo(response.data);
         form.reset(response.data);
       } catch (err: any) {
-        console.error("Axios Error:", err.response || err.message || err);
         if (err.response?.status === 401) {
           toast.error("Unauthorized Access - Login First");
         } else if (err.response?.status === 403) {

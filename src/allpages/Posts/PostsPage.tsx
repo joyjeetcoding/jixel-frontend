@@ -53,7 +53,6 @@ const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
   
       setPostInfo(response.data);
     } catch (err: any) {
-      console.log(err);
       toast.error("Please try checking the internet");
     } finally {
       setLoadingPost(false);
@@ -95,7 +94,6 @@ const PostsPage: React.FC<PostPageProps> = ({ postId }) => {
 
       toast.success("Post Loved Successfully");
     } catch (error: any) {
-      console.log(error);
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {

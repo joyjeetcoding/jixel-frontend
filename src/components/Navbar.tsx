@@ -9,12 +9,10 @@ const Navbar = () => {
   const { authUser, setAuthUser } = useAuthContext();
   useEffect(() => {
     const storedUser = localStorage.getItem("registered-user");
-    console.log("Stored User:", storedUser);
     if (storedUser) {
       setAuthUser(JSON.parse(storedUser));
     }
   }, [setAuthUser]);
-  console.log("AuthUser at Home Page", authUser);
   const router = useRouter();
 
   const redirectToHome = () => {

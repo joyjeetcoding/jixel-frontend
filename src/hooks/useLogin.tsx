@@ -42,7 +42,6 @@ const useLogin = () => {
         throw new Error(data.error);
       }
   
-      console.log(data);
       
       localStorage.setItem("jwt", data.token);
 

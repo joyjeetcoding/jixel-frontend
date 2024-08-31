@@ -55,7 +55,6 @@ const DropDownMenu = () => {
   
       setUserInfo(response.data);
     } catch (err) {
-      console.log("Error in getting Profile image", err);
       toast.error("Sign In Again");
     }
   };

@@ -27,7 +27,6 @@ export const useCreatePost = () => {
       }
     );
 
-    console.log("Response after Posts Form Submit", response);
 
     if (!response.ok) {
       throw new Error("Failed to create Post");

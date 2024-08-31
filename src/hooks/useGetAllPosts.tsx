@@ -30,7 +30,6 @@ const useGetAllPosts = (page: number, limit: number) => {
         setTotalPages(data.totalPages);
       } catch (error: any) {
         toast.error(error.message);
-        console.log(error.message);
       } finally {
         setLoading(false);
       }

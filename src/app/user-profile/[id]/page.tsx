@@ -20,10 +20,8 @@ const UserProfile: NextPage<UserProfileProps> = () => {
 
   const router = useRouter();
   const params = useParams();
-  console.log("Params", params);
   
   const userId = params?.id
-  console.log("userId", userId);
   
   
   const {authUser} = useAuthContext();
